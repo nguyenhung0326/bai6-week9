@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <!--
+    Console Appender: in log ra stdout với format có cấu trúc rõ ràng.
+    Pattern bao gồm: thời gian, cấp độ, tên logger (lớp), và nội dung.
+  -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!--
+    File Appender: ghi log vào file để phục vụ audit và debug sau này.
+    Dùng RollingFileAppender để tránh file log quá lớn.
+  -->
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>logs/banksystem.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- Xoay vòng mỗi ngày, giữ tối đa 30 ngày -->
+      <fileNamePattern>logs/banksystem.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!--
+    Logger cho package com.banksystem: cấp DEBUG để ghi đầy đủ
+    các sự kiện nghiệp vụ (nạp tiền, rút tiền, lỗi).
+  -->
+  <logger name="com.banksystem" level="DEBUG" additivity="false">
+    <appender-ref ref="CONSOLE"/>
+    <appender-ref ref="FILE"/>
+  </logger>
+
+  <!-- Root logger mặc định ở cấp WARN để tránh noise từ thư viện ngoài -->
+  <root level="WARN">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+
+</configuration>
